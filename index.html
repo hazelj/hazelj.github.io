@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Medal Tracker</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
+  <script>
+
+    
+        function getAndFillWithData(selector){
+            var x = 't';
+            var USR="APIdemo";
+            var y = x;
+            var PWD="Rh$zXvaU9vwSM@";
+            var tok = USR + ':' + PWD;
+            var basic_auth = 'Basic ' + btoa(tok);
+
+            var season = "20172018";
+            var API_URL = "http://demo.api.infostradasports.com/svc/Games_v2.svc/json/GetMedalTable_Season?season=20172018&languageCode=2&competitionSetId=2";
+            // var API_URL = "http://demo.api.infostradasports.com/svc/Games_v2.svc/json/GetMedalTable_Season?season=${season}&languageCode=2&competitionSetId=2";
+            var full_url = "http://" + USR + ":" + x + PWD + y + "demo.api.infostradasports.com/svc/Games_v2.svc/json/GetMedalTable_Season?season=20172018&languageCode=2&competitionSetId=2";
+
+            $.ajax({
+                url: API_URL,
+                type: "POST", 
+                dataType: "application/json; charset=utf-8",
+                // dataType: 'jsonp',
+                username: USR,
+                password: x + PWD + y,
+                processData: false,
+                contentType: "application/json",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type':'application/json'
+                },
+                success: function () {
+                    alert("success");
+                    // buildHtmlTable(selector, data['players']);
+                },
+                error: function (xhr, ajaxOptions, thrownError) { //Add these parameters to display the required response
+                    alert(xhr.status);
+                    alert(xhr.responseText);
+                },
+            });
+
+
+            // $.getJSON('https://www.thesportsdb.com/api/v1/json/1/searchloves.php?u=zag', function(data) {
+            //     console.log(data);
+            //     buildHtmlTable(selector, data['players']);
+            // });
+
+            // $.ajax({
+            //     type: 'GET',
+            //     url: API_URL,
+            //     dataType: 'json',
+            //     //whatever you need
+            //     beforeSend: function (xhr) {
+            //         xhr.setRequestHeader('Authorization', basic_auth);
+            //     },
+            //     success: function(data){
+            //         console.log(data);
+            //         buildHtmlTable(selector, data['players']);
+            //     },
+            //     error: function(error){
+            //         console.error(error);
+            //     },
+            // });
+
+            
+
+            // $.ajax({
+            //     // beforeSend: function (xhr) {
+            //     //     xhr.setRequestHeader ("Authorization", "Basic " + btoa(USR + ":" + PWD));
+            //     // },
+            //     username: USR,
+            //     password: PWD,
+            //     dataType: "jsonp",
+            //     // xhrFields: {
+            //     //     withCredentials: true
+            //     // },
+            //     // headers: {
+            //     //     'Authorization': 'Basic ' + btoa('${USR}:${PWD}')
+            //     // },
+                
+                
+            // });
+
+            // $.ajax({
+            //     xhrFields: {
+            //         withCredentials: true
+            //     },
+            //     headers: {
+            //         'Authorization': 'Basic ' + btoa('myuser:mypswd')
+            //     },
+            //     url: "https://www.example.org/protected-data.php"
+            // });
+            // return  [
+            //     { "name": "Megan Rapinoe", "age": 34, "school": "University of Portland", "gold": 1, "silver": 0, "bronze": 0 },
+            //     { "name": "Tobin Heath", "age": 31, "school": "University of North Carolina", "gold": 1, "silver": 0, "bronze": 0 },
+            //     { "name": "Carli Lloyd", "age": 37, "school": "Rutgers", "gold": 1, "silver": 0, "bronze": 0 },
+            // ];
+        }
+
+        // Builds the Table out of apiResults.
+        function buildHtmlTable(selector, apiResults) {
+            var columns = buildAndAddHeader(apiResults, selector);
+
+            for (var i = 0; i < apiResults.length; i++) {
+                var row$ = $('<tr/>');
+                for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                    var cellValue = apiResults[i][columns[colIndex]];
+                    if (cellValue == null) cellValue = "";
+                        row$.append($('<td/>').html(cellValue));
+                    }
+                $(selector).append(row$);
+            }
+        }
+
+        // Build Header
+        function buildAndAddHeader(apiResults, selector) {
+            var columnSet = [];
+            var allowedCols = ["idedit","strusername","stredittype","strreason","date","idteam","idplayer"];
+            var thead$ = $('<thead/>');
+            var tr$ = $('<tr/>');
+
+            for (var i = 0; i < apiResults.length; i++) {
+                var rowHash = apiResults[i];
+                for (var key in rowHash) {
+                    if ($.inArray(key, columnSet) == -1 && allowedCols.includes(key.toLowerCase())) {
+                        columnSet.push(key);
+                        if(['gold', 'silver', 'bronze'].includes(key)){
+                            tr$.append($('<th/>').html(
+                                `<img src="https://widgets.teamusa.org/collegiate/${key}.png" width="24" alt="${key} Medals" border="0">`
+                                ));
+                        }
+                        else{
+                            tr$.append($('<th/>').html(capitalize(key)));
+                        }
+                    }
+                }
+            }
+            thead$.append(tr$);
+            $(selector).append(thead$);
+            return columnSet;
+        }
+
+        function capitalize(mystr){
+            return mystr.charAt(0).toUpperCase() + mystr.slice(1)
+        }
+        
+  </script>
+</head>
+
+    <body onLoad="getAndFillWithData('#medalTable')">
+        <div class="container">
+            <h2>Medal Count</h2>
+            <table class="table" id="medalTable">
+            </table>
+        </div>
+    </body>
+
+</html>
