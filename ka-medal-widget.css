@@ -1,0 +1,76 @@
+#conference-widget{
+    width:600px;
+}
+
+.fixed_header{
+    width: 600px;
+    /* table-layout: fixed; */
+}
+
+.fixed_header tbody{
+    display:block;
+    width: 100%;
+    overflow: auto;
+    height: 400px;
+}
+
+.fixed_header tbody tr{
+    height: 0px;
+}
+.fixed_header tbody tr td{
+    height: 0px;
+}
+
+.fixed_header thead {
+    display: block;
+}
+
+.table > tbody > tr > td{
+    padding: 0px;
+}
+
+.accordion-body, a[aria-expanded="true"]{
+    padding-left: 25px;
+    background-color: lightgray;
+}
+
+a[aria-expanded="true"]{
+    background-color: #42DCA3;
+}
+
+/* .fixed_header tr.hidden-tr {
+    height: 0px;
+    line-height: 0px;
+    display: hidden;
+} */
+
+/* .hiddenRow {
+    padding: 0 !important;
+} */
+
+.fixed_header th, .fixed_header td {
+    width: 200px;
+    /* height: 12px; */
+}
+
+.fixed_header th {
+    text-align: center;
+}
+
+.dropdown-menu {
+    width:max-content;
+}
+
+.ka-checkbox-div {
+    margin-left: 5px;
+}
+
+.custom-control-label {
+    margin-left: 5px;
+    margin-right: 15px;
+}
+
+.all-selector {
+    border-bottom: 1px solid black;
+    padding-bottom: 2px;
+}
