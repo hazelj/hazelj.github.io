@@ -28,6 +28,7 @@ var SILV_F='n_Silver';
 var BRNZ_F='n_Bronze';
 var SPORT_F='sport';
 var SCHOOL_F='school';
+var SORT_BY=CONF_F;
 
 var MAX_COL_CHARS = 20;
 
@@ -41,12 +42,18 @@ function getAndFillWithData(selector){
         {'name': 'Bronze', 'key': BRNZ_F}, 
     ];
 
-    var sub_col_names = ['School', 'Medalist', 'Sport', 'Event', ];
+    var results = dummyApiResults[TOP_F].sort(compareResults);
 
     addHeader(selector, tCols);
-    var tMenuOptions = buildTable('conference', selector, tCols, dummyApiResults[TOP_F]);
+    var tMenuOptions = buildTable('conference', selector, tCols, results);
     buildMenu('conference', CONF_F, Array.from(tMenuOptions[CONF_F]));
     // buildMenus(tMenuOptions, [CONF_F]);
+}
+
+function compareResults(a, b) {
+    const lhs = a[SORT_BY].toUpperCase();
+    const rhs = b[SORT_BY].toUpperCase();
+    return lhs > rhs ? 1 : -1;
 }
 
 function wireMenuFilterItem(tItem){
@@ -69,26 +76,26 @@ function wireMenuFilterItem(tItem){
 }
 
 function buildMenuCheckRow(tKey, tVal, baseElem){
-    var tDiv = $(`<div class="custom-control custom-checkbox ka-checkbox-div"/>`)
-    var tCheck = $(`<input ka-filter-key="${tKey}" ka-filter-val="${tVal}" type="checkbox" class="custom-control-input ka-checkbox" checked="true"/>`);
-    var tLabel = $(`<label class="custom-control-label"/>`);
 
-    tLabel.html(tVal);
-    
-    tDiv.append(tCheck);
-    tDiv.append(tLabel);
+    var tLi = $(`<li class="custom-control custom-checkbox ka-checkbox-li"/>`);
+    var tA = $(`<span class="ka-menu-span"/>`);
+    var tCheck = $(`<input type="checkbox" ka-filter-key="${tKey}" ka-filter-val="${tVal}" class="ka-checkbox" checked="true"/>`);
 
-    baseElem.append(tDiv);
+    tA.append(tCheck);
+    tA.append(tVal);
+    tLi.append(tA);
+
+    baseElem.append(tLi);
     return tCheck;
 }
 
 function buildMenu(tName, tKey, tOpts){
 
     var tMenuDrop = $(`#${tName}-dropdown`);
-    var tMenuForm = $(`<form name="${tKey}-filter-form" id="${tKey}-filter-form" action="" method=""\>`);
+    // var tMenuForm = $(`<form name="${tKey}-filter-form" id="${tKey}-filter-form" action="" method=""\>`);
 
-    tSelectAll = $(`<div class="all-selector" id="${tKey}-select-all">SELECT ALL</div>`);
-    tDeselectAll = $($(`<div class="all-selector" id="${tKey}-deselect-all">DE-SELECT ALL</div>`));
+    tSelectAll = $(`<li class="all-selector" id="${tKey}-select-all">&nbsp&nbspSELECT ALL</li>`);
+    tDeselectAll = $($(`<li class="all-selector" id="${tKey}-deselect-all">&nbsp&nbspDE-SELECT ALL</li>`));
 
     tSelectAll.click(function () {
         $(`tr[ka-filter-${tKey}]`).show();
@@ -102,16 +109,16 @@ function buildMenu(tName, tKey, tOpts){
         $(`tr[ka-hidden-tr]`).hide();
     });
 
-    tMenuForm.append(tSelectAll);
-    tMenuForm.append(tDeselectAll);
+    tMenuDrop.append(tSelectAll);
+    tMenuDrop.append(tDeselectAll);
 
     for (var i = 0; i < tOpts.length; i++) {
         wireMenuFilterItem(
-            buildMenuCheckRow(tKey,  tOpts[i], tMenuForm)
+            buildMenuCheckRow(tKey,  tOpts[i], tMenuDrop)
         );
     }
 
-    tMenuDrop.append(tMenuForm);
+    // tMenuDrop.append(tMenuForm);
 }
 
 function buildMenus(tMenuOptions, mCols){
@@ -123,12 +130,44 @@ function buildMenus(tMenuOptions, mCols){
     // }
 }
 
+function buildHiddenInnerTable(){
+    var tTable = $('<table class="table-bordered"/>');
+    var tBody = $('<tbody class="ka-inner-table-body"/>');
+
+    var tHead = $('<thead class="ka-inner-thead"/>');
+    var tRh = $('<tr/>');
+
+    tRh.append($('<th scope="col"/>').html('Medal'));
+    tRh.append($('<th scope="col"/>').html('Sport'));
+    tRh.append($('<th scope="col"/>').html('Event'));
+    tRh.append($('<th scope="col"/>').html('School'));
+    tRh.append($('<th scope="col"/>').html('Athlete'));
+
+    tHead.append(tRh);
+    tTable.append(tHead);
+
+    var tR1 = $('<tr/>');
+
+    tR1.append($('<td/>').html('Gold'));
+    tR1.append($('<td/>').html('Women’s Soccer'));
+    tR1.append($('<td/>').html('Women’s Soccer'));
+    tR1.append($('<td/>').html('University of Portland'));
+    tR1.append($('<td/>').html('Megan Rapinoe'));
+    tBody.append(tR1);
+
+    tTable.append(tBody);
+    return tTable;
+}
+
 function buildHiddenContent(tId){
 
     var tHiddenRow = $(`<tr class="hidden-tr" ka-hidden-tr="#${tId}"/>`);
-    var tHiddenTD  = $('<td colspan="6" class="hiddenRow"/>');
-    var tHiddenDiv = $(`<div class="accordion-body collapse" id="${tId}">${lorem}</div>`);
+    var tHiddenTD  = $('<td colspan="5" class="hiddenRow"/>');
+    var tHiddenDiv = $(`<div class="accordion-body collapse" id="${tId}"></div>`);
 
+    var tTable = buildHiddenInnerTable();
+
+    tHiddenDiv.append(tTable);
     tHiddenTD.append(tHiddenDiv);
     tHiddenRow.append(tHiddenTD);
     return tHiddenRow;
@@ -165,7 +204,7 @@ function buildTable(tTableName, tSelector, tCols, apiResults) {
         tMenuOptions[tCols[i]['key']] = new Set();
     }
 
-    tBody = $('<tbody />');
+    tBody = $('<tbody class="ka-outer-table-body"/>');
 
     for (var j = 0; j < apiResults.length; j++) {
         
@@ -195,7 +234,7 @@ function buildTable(tTableName, tSelector, tCols, apiResults) {
 }
 
 function addHeader(selector, tCols) {
-    var tHead = $('<thead/>');
+    var tHead = $('<thead id="ka-main-header" class="thead-dark"/>');
     var tR = $('<tr/>');
 
     for (var i = 0; i < tCols.length; i++) {
