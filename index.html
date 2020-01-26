@@ -3,13 +3,13 @@
 <html lang="en">
 <head>
     
-  <title>Medal Tracker</title>
+  <title>USOC Collegiate Results</title>
  
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
@@ -22,10 +22,10 @@
 
 </head>
 
-<body onLoad="getAndFillWithData('#ka-medal-table')">
-    <div class="container" id="conference-widget">
-        <h2>Medal Count</h2>
+<body onLoad="loadKaMedalWidget('#ka-medal-table')">
+    <div class="container" id="ka-results-widget">
 
+        <h2>Results</h2>
         <div class="btn-toolbar" id="ka-medal-toolbar" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group mr-2" role="group" aria-label="conference">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -37,30 +37,22 @@
             <div class="btn-group mr-2" role="group" aria-label="sport">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                     Sport
-                <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Golf</a></li>
-                    <li><a href="#">Swimming</a></li>
-                    <li><a href="#">Triathalon</a></li>
+                </button>
+                <ul class="dropdown-menu" id="sport-dropdown">
                 </ul>
             </div>
             <div class="btn-group mr-2" role="group" aria-label="gender">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                     Gender
-                <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Men</a></li>
-                    <li><a href="#">Women</a></li>
+                </button>
+                <ul class="dropdown-menu" id="gender-dropdown">
                 </ul>
             </div>
             <div class="btn-group mr-4" role="group" aria-label="school">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                     School
-                <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Oregon</a></li>
-                    <li><a href="#">Oregon State</a></li>
-                    <li><a href="#">U.B.</a></li>
+                </button>
+                <ul class="dropdown-menu" id="school-dropdown">
                 </ul>
             </div>
         </div>
