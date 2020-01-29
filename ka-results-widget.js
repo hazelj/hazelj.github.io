@@ -1,5 +1,5 @@
 // var BASE_API_URL = 'http://127.0.0.1:5000/GetSchedulePerson';
-var BASE_API_URL = 'http://og2020-api.sports.gracenote.com/svc/games_v2.svc/json/GetSchedulePerson'
+var BASE_API_URL = 'https://og2020-api.sports.gracenote.com/svc/games_v2.svc/json/GetSchedulePerson'
 var ENV="RELEASE"
 
 var TOP_F='MedalTableNOC';
