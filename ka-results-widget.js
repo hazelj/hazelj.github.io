@@ -24,7 +24,7 @@ var SCHOOL_2_COL = 10;
 var allResultsByDate = {};
 var allSports = new Set();
 var allSchools = new Set();
-var allAthletes = new Set();
+// var allAthletes = new Set();
 
 ANIMATION_SPEED = 300;
 
@@ -72,11 +72,11 @@ function getDataFromApiAndBuild(tSelector){
     $.when.apply(this, results).done(function() {
         console.log("all API requests have completed");
         allSchools.delete("");
-        allAthletes.delete("");
+        // allAthletes.delete("");
         buildMenus(
             Array.from(Object.keys(allResultsByDate).sort(compareDateStrings)), 
             Array.from(allSports).sort(), 
-            Array.from(allAthletes).sort(), 
+            // Array.from(allAthletes).sort(), 
             Array.from(allSchools).sort()
         );
         buildTable(tSelector, column_config, allResultsByDate)
@@ -157,7 +157,7 @@ function parseAndAddPersonResult(result, athlete_dict){
 
             allResultsByDate[date][cat] = allResultsByDate[date][cat].concat(tRow);
             allSports.add(sport_name);
-            allAthletes.add(full_name);
+            // allAthletes.add(full_name);
             allSchools.add(athlete_dict['schools'][0]);
             allSchools.add(athlete_dict['schools'][1]);
         }
@@ -229,7 +229,8 @@ function buildTable(tSelector, tCols, tResults) {
 function buildDateSection(tDate, tResult, tCols, tTarget){
 
     var tEventNames = Object.keys(tResult);
-    var tDateSection = $(`<tr data-toggle="collapse" data-target="#${tTarget}" class="accordion-toggle ka-date-header"/>`);
+
+    var tDateSection = $(`<tr data-toggle="collapse" ka-filter-date="${tDate}" data-target="#${tTarget}" class="accordion-toggle ka-date-header"/>`);
     tDateSection.html(`<div>${tDate}</div>`);
 
     for(var j = 0; j < tEventNames.length; j++){
@@ -246,12 +247,6 @@ function buildEventSection(tDate, tEventName, tResults){
 
     tEvent.attr('ka-filter-gender', tResults[0]['gender']);
     tEvent.attr('ka-filter-sport', tResults[0]['sport_name']);
-    tEvent.attr('ka-filter-date', tDate);
-
-    // tEvent.attr('ka-filter-school1', tResults[0]['schools'][0]);
-    // if(tResults[0]['schools'][1].length){
-    //     tEvent.attr('ka-filter-school2', tResults[0]['schools'][1]);
-    // }
 
     tEvent.html(`<div>${tEventName}</div>`);
 
@@ -283,7 +278,7 @@ function buildEventSection(tDate, tEventName, tResults){
         if(tRes['schools'][1].length){
             tRow.attr('ka-filter-school2', tRes['schools'][1]);
         }
-        tRow.attr('ka-filter-athlete', tRes['full_name']);
+        tRow.attr('ka-filter-athlete', tRes['full_name'].toUpperCase());
 
         tEvent.append(tRow);
     }
@@ -298,16 +293,33 @@ function schoolsToString(tArr){
 *        MENU BUILDING FUNCTIONS         *
 ******************************************/
 
-function buildMenus(tDates, tSports, tAthletes, tSchools){
-    buildMenu('date', tDates);
-    buildMenu('sport', tSports);
-    buildMenu('athlete', tAthletes);
-    buildMenu('gender', ['Men', 'Women', 'Mixed']);
-    buildMenu('school', tSchools);
+function buildMenus(tDates, tSports, tSchools){
+    buildFilterSelectMenu('date', tDates);
+    buildFilterSelectMenu('sport', tSports);
+    buildFilterTextMenu('athlete');
+    buildFilterSelectMenu('gender', ['Men', 'Women', 'Mixed']);
+    buildFilterSelectMenu('school', tSchools);
+}
+
+function buildFilterTextMenu(tKey){
+
+    var tInput = $( `#${tKey}-text-filter` );
+    tInput.keyup(function() {
+        var tVal = tInput.val().toUpperCase();
+        var tAllRows = $(`tr[ka-filter-${tKey}]`);
+
+        if(tVal.length){
+            var tFilterString = `tr[ka-filter-${tKey}*='${tVal}']`;
+            fadeIn($(tFilterString), `ka-hidden-${tKey}`);
+            fadeOut(tAllRows.not(tFilterString), `ka-hidden-${tKey}`);
+        }else{
+            fadeIn(tAllRows, `ka-hidden-${tKey}`);
+        }
+    });
 }
 
 //built the filter menu named by key with the options in tOpts
-function buildMenu(tKey, tOpts){
+function buildFilterSelectMenu(tKey, tOpts){
 
     var tMenu = $(`#${tKey}-dropdown`);
 
