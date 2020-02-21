@@ -1,15 +1,30 @@
-#conference-widget{
+/* #conference-widget{
     width:750px;
-}
+} */
 
-/* #ka-main-header {
-    display: block;
+#ka-results-widget{
+    border: 1px solid grey;
+    width:850px;
+}
+/* 
+body {
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    height: 100%;
 } */
 
 #ka-results-table {
-    height: 500px;
+    height: 600px;
     overflow-y: scroll;
     display: block;
+    empty-cells:hide;
 }
 
 #ka-main-header th {
@@ -24,12 +39,12 @@ tr.ka-date-header {
     /* display:table-row; */
 }
 
-.ka-date-header > div, .ka-event-header > div
+.ka-date-header > div, .ka-event-section > div
 {
     padding-left: 5px;
 }
 
-tr.ka-event-header {
+tr.ka-event-section {
     background-color: #606060;
     color: white;
 }
@@ -111,6 +126,92 @@ a[aria-expanded="true"]{
     width: 250px;
 }
 
-.ka-hidden-conference, .ka-hidden-sport, .ka-hidden-gender, .ka-hidden-school, .ka-hidden-athlete {
+.ka-hidden-conference, .ka-hidden-sport, .ka-hidden-gender, .ka-hidden-school, .ka-hidden-athlete, .ka-hidden-section {
+ /* > div, .ka-hidden-section > thead{ */
     display: none !important;
 }
+
+.ka-table-container {
+    text-align: center;
+    width: 100%;
+}
+
+.ka-spinner-container {
+    width: 256px; /* 80 x 3 rings across plus padding */
+    margin: 0 auto;
+    margin-top: 200px;
+    margin-bottom: -320px;
+    display: -webkit-box;
+    /* display: flex; */
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-direction: row;
+}
+
+.ka-loader {
+    -webkit-box-flex: 0;
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    margin-left: -36px;
+    background: none;
+    border-radius: 50%;
+    border: 6px solid currentColor;
+    box-sizing: border-box;
+    -webkit-animation-name: spin;
+        animation-name: spin;
+    -webkit-animation-duration: 1.2s;
+        animation-duration: 1.2s;
+    -webkit-animation-fill-mode: backwards;
+        animation-fill-mode: backwards;
+    -webkit-animation-iteration-count: infinite;
+        animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+        animation-timing-function: linear;
+  }
+  .ka-load-ring-1 {
+    margin-left: 0;
+    border-top-color: rgba(0, 133, 199, 0.2);
+    color: #0085C7;
+  }
+  .ka-load-ring-2 {
+    border-top-color: rgba(244, 195, 0, 0.2);
+    color: #F4C300;
+    margin-top: 40px;
+  }
+  .ka-load-ring-3 {
+    border-top-color: rgba(0, 0, 0, 0.2);
+    color: #000000;
+  }
+  .ka-load-ring-4 {
+    border-top-color: rgba(0, 159, 61, 0.2);
+    color: #009F3D;
+    margin-top: 40px;
+  }
+  .ka-load-ring-5 {
+    border-top-color: rgba(223, 0, 36, 0.2);
+    color: #DF0024;
+  }
+
+  @-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0);
+              transform: rotate(0);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes spin {
+    0% {
+      -webkit-transform: rotate(0);
+              transform: rotate(0);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg);
+    }
+  }

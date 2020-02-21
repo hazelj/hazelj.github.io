@@ -24,7 +24,6 @@ var SCHOOL_2_COL = 10;
 var allResultsByDate = {};
 var allSports = new Set();
 var allSchools = new Set();
-// var allAthletes = new Set();
 
 ANIMATION_SPEED = 300;
 
@@ -157,13 +156,11 @@ function parseAndAddPersonResult(result, athlete_dict){
 
             allResultsByDate[date][cat] = allResultsByDate[date][cat].concat(tRow);
             allSports.add(sport_name);
-            // allAthletes.add(full_name);
             allSchools.add(athlete_dict['schools'][0]);
             allSchools.add(athlete_dict['schools'][1]);
         }
         
     }
-    // return allResultsByDate;
 }
 
 function parseMedals(tMedals){
@@ -205,8 +202,6 @@ function getAllAthleteIdsAndSchools(){
 // Builds the Table out of apiResults.
 function buildTable(tSelector, tCols, tResults) {
 
-    console.log(tResults);
-
     var tBody = $('<tbody class="ka-outer-table-body"/>');
     var dates = Object.keys(tResults).sort(compareDateStrings);
 
@@ -217,12 +212,10 @@ function buildTable(tSelector, tCols, tResults) {
         
         var tDateSection = buildDateSection(dates[j], tDayResults, tCols, tTarget);
 
-        console.log("tDateSection");
-
-        console.log(tDateSection);
         tBody.append(tDateSection);
     }
 
+    $('#ka-loading-rings').remove();
     $(tSelector).append(tBody);
 }
 
@@ -243,7 +236,7 @@ function buildDateSection(tDate, tResult, tCols, tTarget){
 }
 
 function buildEventSection(tDate, tEventName, tResults){
-    var tEvent = $(`<tr class="ka-event-header"/>`);
+    var tEvent = $(`<tr class="ka-event-section"/>`);
 
     tEvent.attr('ka-filter-gender', tResults[0]['gender']);
     tEvent.attr('ka-filter-sport', tResults[0]['sport_name']);
@@ -315,6 +308,7 @@ function buildFilterTextMenu(tKey){
         }else{
             fadeIn(tAllRows, `ka-hidden-${tKey}`);
         }
+        hideEmptySections();
     });
 }
 
@@ -329,11 +323,13 @@ function buildFilterSelectMenu(tKey, tOpts){
     tSelectAll.click(function () {
         fadeIn($(`tr[ka-filter-${tKey}]`), `ka-hidden-${tKey}`);
         $(`input[ka-filter-key=${tKey}]`).prop('checked', true);
+        hideEmptySections();
     });
 
     tDeselectAll.click(function () {
         fadeOut($(`tr[ka-filter-${tKey}]`), `ka-hidden-${tKey}`);
         $(`input[ka-filter-key=${tKey}]`).prop('checked', false);
+        hideEmptySections();
     });
 
     tMenu.append(tSelectAll);
@@ -382,6 +378,7 @@ function wireMenuFilterItem(tItem){
             fadeOut(tRow, tHidingClass);
             fadeOut(tRow2, tHidingClass);
         }
+        hideEmptySections();
     });
 }
 
@@ -399,14 +396,74 @@ function compareDateStrings(a, b) {
     return lhs > rhs ? 1 : -1;
 }
 
+/*****************************************
+*          Hide/Show FUNCTIONS           *
+******************************************/
+
 function fadeIn(tElem, tClass){
-    tElem.fadeIn("fast", function() {
-        $(this).removeClass(tClass);
+    Promise.all(
+        [tElem.fadeIn("fast", function () { 
+            $(this).removeClass(tClass); 
+        }).promise()]
+    ).then(function () {
+        hideEmptySections();
     });
 }
 
 function fadeOut(tElem, tClass){
-    tElem.fadeOut("fast", function() {
-        $(this).addClass(tClass);
+    Promise.all(
+        [tElem.fadeOut("fast", function () { 
+            $(this).addClass(tClass); 
+        }).promise()]
+    ).then(function () {
+        hideEmptySections();
     });
+}
+
+function hideEmptySections(){
+    var promises = [];
+    var allSections = $('.ka-event-section');
+    for (var i = 0; i < allSections.length; i++) {
+        var sct = $(allSections[i]);
+        if(
+            sct.find('tr.ka-event-row').length == 
+            sct.find('tr[class*="ka-hidden-"]').length 
+        ){
+            promises = promises.concat(
+                sct.fadeOut("fast", function () { 
+                $(this).addClass('ka-hidden-section'); 
+            }).promise());
+        }
+        else{
+            promises = promises.concat(
+            sct.fadeIn("fast", function () { 
+                $(this).removeClass('ka-hidden-section'); 
+            }).promise());
+        }
+    }
+
+    //when all the subsection hiding is done, look up to the date sections
+    Promise.all(promises).then(function () {
+        hideEmptyDateSections();
+    });
+}
+
+function hideEmptyDateSections(){
+    var allDateSections = $('.ka-date-header');
+    for (var i = 0; i < allDateSections.length; i++) {
+        var sct = $(allDateSections[i]);
+        if(
+            sct.find('tr.ka-event-section').length == 
+            sct.find('tr[class*="ka-hidden-section"]').length 
+        ){
+            sct.fadeOut("fast", function () { 
+                $(this).addClass('ka-hidden-section'); 
+            });
+        }
+        else{
+            sct.fadeIn("fast", function () { 
+                $(this).removeClass('ka-hidden-section'); 
+            });
+        }
+    }
 }
