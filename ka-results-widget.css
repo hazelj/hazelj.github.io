@@ -103,13 +103,8 @@ a[aria-expanded="true"]{
     width:max-content;
 }
 
-.ka-checkbox-li {
-    margin-left: 5px;
-    padding-left: 2px;
-}
-
-.ka-checkbox, .ka-menu-span {
-    margin-right: 4px;
+.ka-select{
+    margin-right: 10px;
 }
 
 .custom-control-label {
@@ -117,16 +112,12 @@ a[aria-expanded="true"]{
     margin-right: 15px;
 }
 
-.all-selector {
-    border-bottom: 1px solid black;
-    padding-bottom: 2px;
-}
 
 .d-flex{
     width: 250px;
 }
 
-.ka-hidden-conference, .ka-hidden-sport, .ka-hidden-gender, .ka-hidden-school, .ka-hidden-athlete, .ka-hidden-section {
+.ka-hidden-date, .ka-hidden-conference, .ka-hidden-sport, .ka-hidden-gender, .ka-hidden-school, .ka-hidden-athlete, .ka-hidden-section {
  /* > div, .ka-hidden-section > thead{ */
     display: none !important;
 }

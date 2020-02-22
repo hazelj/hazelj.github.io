@@ -317,50 +317,56 @@ function buildFilterSelectMenu(tKey, tOpts){
 
     var tMenu = $(`#${tKey}-dropdown`);
 
-    tSelectAll = $(`<li class="all-selector" id="${tKey}-select-all">&nbsp&nbspSELECT ALL</li>`);
-    tDeselectAll = $($(`<li class="all-selector" id="${tKey}-deselect-all">&nbsp&nbspDE-SELECT ALL</li>`));
-
-    tSelectAll.click(function () {
-        fadeIn($(`tr[ka-filter-${tKey}]`), `ka-hidden-${tKey}`);
-        $(`input[ka-filter-key=${tKey}]`).prop('checked', true);
-        hideEmptySections();
-    });
-
-    tDeselectAll.click(function () {
-        fadeOut($(`tr[ka-filter-${tKey}]`), `ka-hidden-${tKey}`);
-        $(`input[ka-filter-key=${tKey}]`).prop('checked', false);
-        hideEmptySections();
-    });
-
-    tMenu.append(tSelectAll);
-    tMenu.append(tDeselectAll);
-
     for (var i = 0; i < tOpts.length; i++) {
-        wireMenuFilterItem(
-            buildMenuCheckRow(tKey,  tOpts[i], tMenu)
-        );
+        buildMenuCheckRow(tKey, tOpts[i], tMenu)
     }
-
+    tMenu.selectpicker("refresh");
+    wireMenu(tMenu, tKey);
 }
 
 //build the row in the menu filter with necessary attrs
 function buildMenuCheckRow(tKey, tVal, baseElem){
 
-    var tLi = $(`<li class="custom-control custom-checkbox ka-checkbox-li"/>`);
-    var tA = $(`<span class="ka-menu-span"/>`);
-    var tCheck = $(`<input type="checkbox" ka-filter-key="${tKey}" ka-filter-val="${tVal}" class="ka-checkbox" checked="true"/>`);
+    var tOption = $(`<option selected="selected" ka-filter-key="${tKey}" ka-filter-val="${tVal}" value="${tVal}">${tVal}</option>`);
 
-    tA.append(tCheck);
-    tA.append(tVal);
-    tLi.append(tA);
+    baseElem.append(tOption);
+    return tOption;
+}
 
-    baseElem.append(tLi);
-    return tCheck;
+function wireMenu(tMenu, tKey){
+    tMenu.on("changed.bs.select", 
+        function(e, clickedIndex, newValue, oldValue) {
+        var tOpts = $(`#${tKey}-dropdown option`);
+        for (var i = 0; i < tOpts.length; i++) {
+            
+            var tOpt = tOpts[i];
+            var tVal = tOpt.value;
+
+            //filters are EXCLUSIVE - meanging that if a section has 2 filters
+            //corresponding to it, and either is unchecked, it will remain hidden
+            var tRow = $(`tr[ka-filter-${tKey}='${tVal}']`);
+            var tRow2 = $(`tr[ka-filter-${tKey}2='${tVal}']`);
+            var tHidingClass = `ka-hidden-${tKey}`;
+            
+            if(tOpt.selected){
+                console.log(tVal, " was selected");
+                console.log(tHidingClass, " tHidingClass");
+                fadeIn(tRow, tHidingClass);
+                fadeIn(tRow2, tHidingClass);
+            }
+            else{
+                console.log("hiding: ", tRow);
+                fadeOut(tRow, tHidingClass);
+                fadeOut(tRow2, tHidingClass);
+            }
+        }
+    });
 }
 
 //wire in the filter menu listeners
 function wireMenuFilterItem(tItem){
     tItem.change(function () {
+
         var tKey = tItem.attr('ka-filter-key');
         var tVal = tItem.attr('ka-filter-val');
 
@@ -454,7 +460,7 @@ function hideEmptyDateSections(){
         var sct = $(allDateSections[i]);
         if(
             sct.find('tr.ka-event-section').length == 
-            sct.find('tr[class*="ka-hidden-section"]').length 
+            sct.find('tr[class*="ka-hidden-"]').length 
         ){
             sct.fadeOut("fast", function () { 
                 $(this).addClass('ka-hidden-section'); 
