@@ -6,19 +6,6 @@
     border: 1px solid grey;
     width:850px;
 }
-/* 
-body {
-    display: -webkit-box;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    flex-direction: column;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    height: 100%;
-} */
 
 #ka-results-table {
     height: 600px;
@@ -31,15 +18,17 @@ body {
     text-align: center;
 }
 
-tr.ka-date-header {
-    background-color: black;
+tr.ka-date-section {
     color: white;
     width: 100%;
     border-bottom: 2px solid grey;
-    /* display:table-row; */
 }
 
-.ka-date-header > div, .ka-event-section > div
+.ka-date-section > div{
+    background-color: black;
+}
+
+.ka-date-section > div, .ka-event-section > div
 {
     padding-left: 5px;
 }
@@ -117,8 +106,12 @@ a[aria-expanded="true"]{
     width: 250px;
 }
 
-.ka-hidden-date, .ka-hidden-conference, .ka-hidden-sport, .ka-hidden-gender, .ka-hidden-school, .ka-hidden-athlete, .ka-hidden-section {
- /* > div, .ka-hidden-section > thead{ */
+.ka-hidden-date, 
+.ka-hidden-gender, .ka-hidden-sport,
+.ka-hidden-school, .ka-hidden-athlete,
+.ka-hidden-section,
+.ka-hidden-l1, .ka-hidden-l2, .ka-hidden-l3,
+.ka-hidden-conference{
     display: none !important;
 }
 
@@ -127,7 +120,16 @@ a[aria-expanded="true"]{
     width: 100%;
 }
 
-.ka-spinner-container {
+/* #ka-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+ } */
+
+.ka-load-div {
     width: 256px; /* 80 x 3 rings across plus padding */
     margin: 0 auto;
     margin-top: 200px;
@@ -137,6 +139,7 @@ a[aria-expanded="true"]{
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
     flex-direction: row;
+    z-index: -100;
 }
 
 .ka-loader {

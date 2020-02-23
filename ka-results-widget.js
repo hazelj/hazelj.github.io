@@ -62,7 +62,7 @@ function getDataFromApiAndBuild(tSelector){
     // }
     // else{ 
         for (var i = 0; i < all_ids.length; i++) {
-            console.log("requesting for id: ", all_ids[i]['id']);
+            // console.log("requesting for id: ", all_ids[i]['id']);
             tAsync = singleApiCall(all_ids[i]);
             results.push(tAsync);
         }
@@ -186,7 +186,7 @@ function getAllAthleteIdsAndSchools(){
         ids.add({
             'id': athlete_lookup[i][ATHLETE_ID_COL],
             'schools': [
-                athlete_lookup[i][SCHOOL_1_COL], 
+                athlete_lookup[i][SCHOOL_1_COL] || "None Listed", 
                 athlete_lookup[i][SCHOOL_2_COL]
             ]
         });
@@ -215,7 +215,7 @@ function buildTable(tSelector, tCols, tResults) {
         tBody.append(tDateSection);
     }
 
-    $('#ka-loading-rings').remove();
+    $('#ka-load-div').remove();
     $(tSelector).append(tBody);
 }
 
@@ -223,19 +223,19 @@ function buildDateSection(tDate, tResult, tCols, tTarget){
 
     var tEventNames = Object.keys(tResult);
 
-    var tDateSection = $(`<tr data-toggle="collapse" ka-filter-date="${tDate}" data-target="#${tTarget}" class="accordion-toggle ka-date-header"/>`);
+    var tDateSection = $(`<tr data-toggle="collapse" ka-filter-date="${tDate}" data-target="#${tTarget}" class="accordion-toggle ka-date-section"/>`);
     tDateSection.html(`<div>${tDate}</div>`);
 
     for(var j = 0; j < tEventNames.length; j++){
         var tEventName = tEventNames[j]; 
-        var tEventSection = buildEventSection(tDate, tEventName, tResult[tEventName]);
+        var tEventSection = buildEventSection(tEventName, tResult[tEventName]);
         tDateSection.append(tEventSection);
     }
 
     return tDateSection;
 }
 
-function buildEventSection(tDate, tEventName, tResults){
+function buildEventSection(tEventName, tResults){
     var tEvent = $(`<tr class="ka-event-section"/>`);
 
     tEvent.attr('ka-filter-gender', tResults[0]['gender']);
@@ -258,24 +258,26 @@ function buildEventSection(tDate, tEventName, tResults){
 
     //build the rows
     for(var j = 0; j < tResults.length; j++){
-        var tRes = tResults[j]
-        var tRow = $(`<tr class="ka-event-row"/>`);
-        tRow.append($('<td/>').html(tRes['event']));
-        tRow.append($('<td/>').html(tRes['result']));
-        tRow.append($('<td/>').html(tRes['place']));
-        tRow.append($('<td/>').html(tRes['medal']));
-        tRow.append($('<td/>').html(tRes['full_name']));
-        tRow.append($('<td/>').html(schoolsToString(tRes['schools'])));
-
-        tRow.attr('ka-filter-school', tRes['schools'][0]);
-        if(tRes['schools'][1].length){
-            tRow.attr('ka-filter-school2', tRes['schools'][1]);
-        }
-        tRow.attr('ka-filter-athlete', tRes['full_name'].toUpperCase());
-
-        tEvent.append(tRow);
+        tEvent.append(buildRowSection(tResults[j]));
     }
     return tEvent;
+}
+
+function buildRowSection(tRes){
+    var tRow = $(`<tr class="ka-event-row"/>`);
+    tRow.append($('<td/>').html(tRes['event']));
+    tRow.append($('<td/>').html(tRes['result']));
+    tRow.append($('<td/>').html(tRes['place']));
+    tRow.append($('<td/>').html(tRes['medal']));
+    tRow.append($('<td/>').html(tRes['full_name']));
+    tRow.append($('<td/>').html(schoolsToString(tRes['schools'])));
+
+    tRow.attr('ka-filter-school', tRes['schools'][0]);
+    if(tRes['schools'][1].length){
+        tRow.attr('ka-filter-school2', tRes['schools'][1]);
+    }
+    tRow.attr('ka-filter-athlete', tRes['full_name'].toUpperCase());
+    return tRow;
 }
 
 function schoolsToString(tArr){
@@ -290,7 +292,7 @@ function buildMenus(tDates, tSports, tSchools){
     buildFilterSelectMenu('date', tDates);
     buildFilterSelectMenu('sport', tSports);
     buildFilterTextMenu('athlete');
-    buildFilterSelectMenu('gender', ['Men', 'Women', 'Mixed']);
+    buildFilterSelectMenu('gender', ['Men', 'Women', 'Mixed', 'Open']);
     buildFilterSelectMenu('school', tSchools);
 }
 
@@ -326,9 +328,7 @@ function buildFilterSelectMenu(tKey, tOpts){
 
 //build the row in the menu filter with necessary attrs
 function buildMenuCheckRow(tKey, tVal, baseElem){
-
     var tOption = $(`<option selected="selected" ka-filter-key="${tKey}" ka-filter-val="${tVal}" value="${tVal}">${tVal}</option>`);
-
     baseElem.append(tOption);
     return tOption;
 }
@@ -360,31 +360,6 @@ function wireMenu(tMenu, tKey){
                 fadeOut(tRow2, tHidingClass);
             }
         }
-    });
-}
-
-//wire in the filter menu listeners
-function wireMenuFilterItem(tItem){
-    tItem.change(function () {
-
-        var tKey = tItem.attr('ka-filter-key');
-        var tVal = tItem.attr('ka-filter-val');
-
-        //filters are EXCLUSIVE - meanging that if a section has 2 filters
-        //corresponding to it, and either is unchecked, it will remain hidden
-        tRow = $(`tr[ka-filter-${tKey}='${tVal}']`);
-        tRow2 = $(`tr[ka-filter-${tKey}2='${tVal}']`);
-        tHidingClass = `ka-hidden-${tKey}`;
-
-        if(tItem.is(":checked")){
-            fadeIn(tRow, tHidingClass);
-            fadeIn(tRow2, tHidingClass);
-        }
-        else{
-            fadeOut(tRow, tHidingClass);
-            fadeOut(tRow2, tHidingClass);
-        }
-        hideEmptySections();
     });
 }
 
@@ -433,7 +408,7 @@ function hideEmptySections(){
         var sct = $(allSections[i]);
         if(
             sct.find('tr.ka-event-row').length == 
-            sct.find('tr[class*="ka-hidden-"]').length 
+            sct.find('tr.ka-event-row[class*="ka-hidden-"]').length 
         ){
             promises = promises.concat(
                 sct.fadeOut("fast", function () { 
@@ -455,12 +430,12 @@ function hideEmptySections(){
 }
 
 function hideEmptyDateSections(){
-    var allDateSections = $('.ka-date-header');
+    var allDateSections = $('.ka-date-section');
     for (var i = 0; i < allDateSections.length; i++) {
         var sct = $(allDateSections[i]);
         if(
             sct.find('tr.ka-event-section').length == 
-            sct.find('tr[class*="ka-hidden-"]').length 
+            sct.find('tr.ka-event-section[class*="ka-hidden-"]').length 
         ){
             sct.fadeOut("fast", function () { 
                 $(this).addClass('ka-hidden-section'); 
