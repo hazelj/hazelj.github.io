@@ -16,52 +16,32 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
   
-  <link rel="stylesheet" href="ka-results-widget.css">
-  <script src="ka-results-widget.js"></script>
+  <link rel="stylesheet" href="ka-widget.min.css">
+  <script src="ka-widget.min.js"></script>
+
+  <script>
+    $(document).ready(function(){
+        $('#switch-button').click(function(){
+            var toUnhide = $('.ka-widget.ka-hidden-div');
+            $('.ka-widget').addClass('ka-hidden-div');
+            toUnhide.removeClass('ka-hidden-div');
+        });
+    });
+    </script>
 
 </head>
 
-<body onLoad="loadKaMedalWidget('#ka-results-table')">
-    <div class="container" id="ka-results-widget">
+<body onLoad="loadKaResultWidget('#ka-results-widget'); loadKaLeaderboardWidget('#ka-leaderboard-widget')">
 
-        <h2>Results</h2>
+  <div class="container ka-widget" id="ka-results-widget"></div>
 
-          <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    <select class="selectpicker ka-select dropdown-primary" data-width="130px" multiple="multiple" data-actions-box="true" data-title="Date" data-selected-text-format="static" id="date-dropdown"></select>
-                </li>
-                <li class="nav-item dropdown">
-                    <select class="selectpicker ka-select" data-width="130px" multiple="multiple" data-actions-box="true" data-title="Sport" data-selected-text-format="static" id="sport-dropdown"></select>
-                </li>
-                <li class="nav-item dropdown">
-                    <select class="selectpicker ka-select" data-width="130px" multiple="multiple" data-actions-box="true" data-title="Gender" data-selected-text-format="static" id="gender-dropdown"></select>
-                </li>
-                <li class="nav-item dropdown">
-                    <select class="selectpicker ka-select" data-width="130px" multiple="multiple" data-actions-box="true" data-title="School" data-selected-text-format="static" id="school-dropdown"></select>
-                </li>
-                <li class="nav-item dropdown">
-                </li>
-              </ul>
-              <form class="form-inline my-2 my-lg-0" style="width:220px">
-                <input style="width:100%" type="text" id="athlete-text-filter" placeholder="Filter by athlete name..." title="Type in a name"></input>
-              </form>
-            </div>
-          </nav>
-              
-        <div class='ka-table-container'>
-            <div class="ka-load-div" id="ka-load-div">
-                <div class="ka-loader ka-load-ring-1"></div>
-                <div class="ka-loader ka-load-ring-2"></div>
-                <div class="ka-loader ka-load-ring-3"></div>
-                <div class="ka-loader ka-load-ring-4"></div>
-                <div class="ka-loader ka-load-ring-5"></div>
-            </div>
-            <table class="table fixed-size-table" id="ka-results-table" ></table>
-        </div>
-    </div>
+  <div class="container ka-widget ka-hidden-div" id="ka-leaderboard-widget"></div>
 
+  <br>
+  <center>
+  <button class='btn-primary' id='switch-button'>Toggle Between Configs</button>
+  </center>
+  
 </body>
 
 </html>
