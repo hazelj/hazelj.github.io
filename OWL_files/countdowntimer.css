@@ -1,0 +1,117 @@
+.countdowntimer.module {
+    opacity: 1;
+}
+.countdowntimer .module-contents {
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    max-width: 600px;
+}
+
+.countdowntimer-image img {
+    height: 90px;
+}
+
+.countdowntimer .pause, .countdowntimer .restart {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background: rgb(220,220,220);
+    margin-top: -4px;
+    border: solid 1px transparent;
+    margin-right: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .countdowntimer .pause span, .countdowntimer .restart span {
+        opacity: 0.5;
+        position: absolute;
+    }
+
+.countdowntimer .clock {
+    visibility: hidden;
+    display: flex;
+    justify-content: space-between;
+    margin: auto 0 auto 1rem;
+    flex-basis: 45%;
+}
+
+    .countdowntimer .clock.initialized {
+        visibility: visible;
+    }
+
+    .countdowntimer .clock .sections {
+        flex-basis: 25%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        border-right: solid 1px gray;
+    }
+
+        .countdowntimer .clock .sections:last-of-type {
+            border-right: none;
+        }
+
+        .countdowntimer .clock .sections span {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+            .countdowntimer .clock .sections span:first-of-type {
+                color: #cc1033;
+                font-size: 28px;
+                line-height: 24px;
+                letter-spacing: 1px;
+            }
+
+@media only screen and (max-width: 728px) {
+    .countdowntimer .clock .sections span {
+        font-size: 12px;
+    }
+
+        .countdowntimer .clock .sections span:first-of-type {
+            font-size: 20px;
+            line-height: 16px;
+        }
+
+    .countdowntimer .pause, .countdowntimer .restart {
+        margin-right: 0;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .countdowntimer-image img {
+        height: 90px;
+    }
+
+    .countdowntimer .module-contents {
+        padding: 0;
+        justify-content: center;
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
+
+    .countdowntimer .countdowntimer-image {
+        text-align: center;
+    }
+
+    .countdowntimer .clock {
+        margin: 1rem;
+        flex-basis: 70%;
+    }
+
+        .countdowntimer .clock .sections span {
+            font-size: 12px;
+        }
+
+            .countdowntimer .clock .sections span:first-of-type {
+                font-size: 20px;
+                line-height: 16px;
+            }
+}
