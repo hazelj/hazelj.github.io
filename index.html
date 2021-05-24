@@ -71,8 +71,10 @@
 
     <script>
         $(document).ready(function(){
+            var idx = 0;
             $('#switch-button').click(function(){
-                var toUnhide = $('.ka-widget.ka-hidden-div');
+                idx = (idx+1) % $('.ka-widget').length;
+                var toUnhide = $($('.ka-widget')[idx]);
                 $('.ka-widget').addClass('ka-hidden-div');
                 toUnhide.removeClass('ka-hidden-div');
             });
@@ -1420,8 +1422,8 @@ Team Lorem Ipsum's Watch List
 <div>
     <img src='assets/usflag.png' class="ka-hidden-div" style="padding-top:75px; width:300px;">
     <div class="container ka-widget" id="ka-results-widget"></div>
-
     <div class="container ka-widget ka-hidden-div" id="ka-leaderboard-widget"></div>
+    <div class="container ka-widget ka-hidden-div" id="ka-medals-widget"></div>
 
     <br>
     <center>
@@ -1666,6 +1668,7 @@ Team Lorem Ipsum's Watch List
 	document.addEventListener("DOMContentLoaded", function() {
         loadKaResultWidget('#ka-results-widget'); 
         loadKaLeaderboardWidget('#ka-leaderboard-widget');
+        loadKaMedalsWidget('#ka-medals-widget', '21', '2020 Paralympic Games College Medals');
 		const FORM_TIME_START = Math.floor((new Date).getTime()/1000);
 		let formElement = document.getElementById("tfa_0");
 		if (null === formElement) {
