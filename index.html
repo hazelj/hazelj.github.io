@@ -1424,6 +1424,7 @@ Team Lorem Ipsum's Watch List
     <div class="container ka-widget" id="ka-results-widget"></div>
     <div class="container ka-widget ka-hidden-div" id="ka-leaderboard-widget"></div>
     <div class="container ka-widget ka-hidden-div" id="ka-medals-widget"></div>
+    <div class="container ka-widget ka-hidden-div" id="ka-schedule-widget"></div>
 
     <br>
     <center>
@@ -1668,7 +1669,8 @@ Team Lorem Ipsum's Watch List
 	document.addEventListener("DOMContentLoaded", function() {
         loadKaResultWidget('#ka-results-widget'); 
         loadKaLeaderboardWidget('#ka-leaderboard-widget');
-        loadKaMedalsWidget('#ka-medals-widget', '21', '2020 Paralympic Games College Medals');
+        loadKaScheduleWidget('#ka-schedule-widget');
+        loadKaMedalsWidget('#ka-medals-widget', '21', '2020 Paralympic Games: U.S. College Athlete Results');
 		const FORM_TIME_START = Math.floor((new Date).getTime()/1000);
 		let formElement = document.getElementById("tfa_0");
 		if (null === formElement) {
